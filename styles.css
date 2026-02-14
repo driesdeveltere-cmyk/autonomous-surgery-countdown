@@ -63,3 +63,10 @@ p{
   justify-content:center;
   opacity:.85;
 }
+
+.illus{
+  margin-top: 18px;
+  display:flex;
+  justify-content:center;
+  opacity: .9;
+}
