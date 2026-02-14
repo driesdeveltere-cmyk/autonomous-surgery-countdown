@@ -50,3 +50,9 @@ p{
 }
 
 .accent{color: var(--accent);}
+
+.subtitle{
+  margin-top:6px;
+  color: var(--muted);
+  font-size: 15px;
+}
