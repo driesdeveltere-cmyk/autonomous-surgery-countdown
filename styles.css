@@ -56,3 +56,10 @@ p{
   color: var(--muted);
   font-size: 15px;
 }
+
+.illus{
+  margin-top:22px;
+  display:flex;
+  justify-content:center;
+  opacity:.85;
+}
