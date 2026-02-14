@@ -1,2 +1,52 @@
-body { background: hotpink !important; }
-h1 { color: black !important; font-size: 60px !important; }
+:root{
+  --bg:#0b0f14;
+  --card:#121826;
+  --text:#e8eef6;
+  --muted:#aab6c5;
+  --line:rgba(255,255,255,.10);
+  --accent:#67F2D0;
+}
+
+*{box-sizing:border-box}
+body{
+  margin:0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+}
+
+.wrap{
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 60px 18px;
+}
+
+.card{
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  padding: 22px;
+}
+
+h1{
+  margin:0 0 10px;
+  font-size: clamp(28px, 4vw, 44px);
+  letter-spacing: -0.02em;
+}
+
+p{
+  margin:0;
+  color: var(--muted);
+  line-height: 1.55;
+}
+
+.count{
+  margin-top: 18px;
+  padding: 14px 16px;
+  border-radius: 14px;
+  border: 1px solid var(--line);
+  font-variant-numeric: tabular-nums;
+  font-size: 18px;
+}
+
+.accent{color: var(--accent);}
