@@ -1,160 +1,489 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8">
-<title>Autonomous Surgery Countdown</title>
-<meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Autonomous Surgery Countdown</title>
+  <meta name="description" content="A countdown to the claim: fully autonomous surgical robots outperform humans at scale by Jan 6, 2029." />
 
-<style>
-:root{
-  --bg:#070A10;
-  --card:#121826;
-  --text:#ECF2FA;
-  --muted:#AAB6C5;
-  --accent:#67F2D0;
-  --line:rgba(255,255,255,.10);
-}
+  <style>
+    :root{
+      --bg:#070A10;
+      --panel:rgba(255,255,255,.06);
+      --panel2:rgba(255,255,255,.04);
+      --line:rgba(255,255,255,.10);
+      --text:#ECF2FA;
+      --muted:rgba(236,242,250,.72);
+      --dim:rgba(236,242,250,.55);
+      --accent:#67F2D0;
 
-*{box-sizing:border-box}
-html{scroll-behavior:smooth}
+      --r:22px;
+      --shadow: 0 18px 60px rgba(0,0,0,.40);
+    }
 
-body{
-  margin:0;
-  font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
-  background: radial-gradient(800px 400px at 20% 0%, rgba(103,242,208,.10), transparent 60%),
-              radial-gradient(600px 300px at 90% 10%, rgba(103,242,208,.06), transparent 60%),
-              var(--bg);
-  color:var(--text);
-}
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{
+      margin:0;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+      color:var(--text);
+      background:
+        radial-gradient(900px 520px at 15% 0%, rgba(103,242,208,.12), transparent 62%),
+        radial-gradient(700px 420px at 90% 12%, rgba(103,242,208,.07), transparent 62%),
+        var(--bg);
+      overflow-x:hidden;
+    }
 
-.wrap{
-  max-width:900px;
-  margin:auto;
-  padding:60px 20px 80px;
-}
+    /* subtle parallax orbs */
+    .bg{position:fixed; inset:0; z-index:-1; pointer-events:none; overflow:hidden;}
+    .orb{
+      position:absolute;
+      border-radius:999px;
+      filter: blur(46px);
+      opacity:.55;
+      transform: translate3d(0,0,0);
+    }
+    .orb.a{width:520px;height:520px;left:-160px;top:-220px;background:rgba(103,242,208,.22);}
+    .orb.b{width:560px;height:560px;right:-220px;top:120px;background:rgba(103,242,208,.14);}
+    .orb.c{width:720px;height:720px;left:16%;bottom:-360px;background:rgba(103,242,208,.10);}
 
-h1{
-  margin:0 0 6px;
-  font-size: clamp(34px,4vw,52px);
-  letter-spacing:-.02em;
-}
+    .wrap{
+      max-width: 1040px;
+      margin: 0 auto;
+      padding: 26px 18px 80px;
+    }
 
-.subtitle{
-  color:var(--muted);
-  font-size:16px;
-  margin-bottom:20px;
-}
+    .pill{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      border:1px solid var(--line);
+      background: rgba(255,255,255,.03);
+      padding: 8px 12px;
+      border-radius: 999px;
+      font-size: 12px;
+      letter-spacing:.10em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
 
-.card{
-  background:var(--card);
-  border:1px solid var(--line);
-  border-radius:20px;
-  padding:24px;
-  margin-top:22px;
-  box-shadow:0 20px 60px rgba(0,0,0,.35);
-}
+    .hero{
+      padding: 64px 0 26px;
+    }
 
-.count{
-  margin-top:18px;
-  padding:16px;
-  border:1px dashed var(--line);
-  border-radius:16px;
-  font-size:20px;
-  font-variant-numeric: tabular-nums;
-}
+    h1{
+      margin: 14px 0 10px;
+      font-size: clamp(40px, 5vw, 68px);
+      line-height: 1.02;
+      letter-spacing: -0.03em;
+    }
 
-.accent{color:var(--accent)}
+    .dim{color:var(--dim)}
+    .lead{
+      margin: 0;
+      max-width: 860px;
+      color:var(--muted);
+      line-height: 1.65;
+      font-size: 16px;
+    }
 
-h2{
-  margin:0 0 10px;
-  font-size:20px;
-}
+    .cta{
+      display:flex;
+      gap:10px;
+      margin-top: 18px;
+      flex-wrap: wrap;
+    }
 
-p{
-  color:var(--muted);
-  line-height:1.6;
-  margin:0;
-}
+    .btn{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      padding: 10px 14px;
+      border-radius: 999px;
+      border: 1px solid rgba(103,242,208,.35);
+      background: rgba(103,242,208,.12);
+      color: var(--text);
+      text-decoration:none;
+      font-size: 14px;
+      transition: transform .15s ease;
+    }
+    .btn:hover{transform: translateY(-1px);}
+    .btn.ghost{
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,.03);
+      color: var(--muted);
+    }
 
-footer{
-  margin-top:50px;
-  text-align:center;
-  color:#6e7a88;
-  font-size:13px;
-}
-</style>
+    .grid{
+      display:grid;
+      grid-template-columns: 1.2fr .8fr;
+      gap: 14px;
+      align-items: start;
+      margin-top: 18px;
+    }
+
+    .card{
+      border: 1px solid var(--line);
+      background: linear-gradient(180deg, rgba(255,255,255,.07), rgba(255,255,255,.03));
+      border-radius: var(--r);
+      padding: 18px;
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(12px);
+    }
+
+    .card.soft{
+      background: linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.025));
+    }
+
+    .cardtop{
+      display:flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-bottom: 10px;
+    }
+
+    h2{
+      margin:0;
+      font-size: 18px;
+      letter-spacing: -0.01em;
+    }
+
+    .micro{
+      font-size: 12px;
+      color: var(--dim);
+    }
+
+    .countline{
+      margin-top: 10px;
+      padding: 14px 14px;
+      border-radius: 16px;
+      border: 1px dashed rgba(255,255,255,.18);
+      background: rgba(0,0,0,.18);
+      font-variant-numeric: tabular-nums;
+      display:flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .big{
+      font-size: 18px;
+      color: var(--text);
+      letter-spacing: .01em;
+    }
+
+    .labels{
+      display:flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .chip{
+      border:1px solid rgba(255,255,255,.12);
+      background: rgba(255,255,255,.03);
+      border-radius: 999px;
+      padding: 6px 10px;
+    }
+
+    .status{
+      margin-top: 10px;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.55;
+    }
+
+    .illus{
+      margin-top: 14px;
+      display:flex;
+      justify-content:center;
+      opacity:.92;
+    }
+
+    .split{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+      margin-top: 14px;
+    }
+
+    ul{
+      margin: 10px 0 0 18px;
+      color: var(--muted);
+      line-height: 1.6;
+      font-size: 14px;
+    }
+    strong{color: var(--text);}
+
+    .video{
+      position: relative;
+      border-radius: var(--r);
+      overflow:hidden;
+      border: 1px solid rgba(255,255,255,.12);
+      background: rgba(0,0,0,.20);
+      aspect-ratio: 16/9;
+    }
+    .video iframe{
+      position:absolute; inset:0;
+      width:100%; height:100%;
+      border:0;
+    }
+
+    .footer{
+      margin-top: 18px;
+      padding-top: 16px;
+      border-top: 1px solid rgba(255,255,255,.06);
+      color: var(--dim);
+      font-size: 12px;
+    }
+
+    /* scroll reveal */
+    .reveal{
+      opacity: 0;
+      transform: translateY(14px);
+      transition: opacity 650ms ease, transform 650ms ease;
+    }
+    .reveal.show{
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    @media (max-width: 920px){
+      .grid{grid-template-columns: 1fr;}
+      .split{grid-template-columns: 1fr;}
+      .hero{padding-top: 46px;}
+    }
+  </style>
 </head>
 
 <body>
-<main class="wrap">
+  <div class="bg" aria-hidden="true">
+    <div class="orb a"></div>
+    <div class="orb b"></div>
+    <div class="orb c"></div>
+  </div>
 
-  <!-- HERO -->
-  <h1>Autonomous Surgery <span class="accent">Countdown</span></h1>
-  <p class="subtitle">
-    Tracking the claim that fully autonomous surgical robots will outperform current human surgery at scale by 6 Jan 2029.
-  </p>
+  <main class="wrap">
 
-  <!-- COUNTDOWN CARD -->
-  <section class="card">
-    <p>Start: <strong>6 Jan 2026</strong> → Deadline: <strong>6 Jan 2029</strong></p>
-    <div class="count" id="countdown">Loading…</div>
-  </section>
+    <header class="hero">
+      <div class="pill">CLAIM WATCH · 3 YEARS</div>
+      <h1>
+        Autonomous surgery<br/>
+        <span class="dim">at scale, unsupervised.</span>
+      </h1>
+      <p class="lead">
+        Countdown to <strong>6 Jan 2029</strong> (Europe/Brussels), based on the public claim that humanoid robots will become
+        better surgeons than humans within ~3 years and “at scale.”
+      </p>
 
-  <!-- WHAT COUNTS -->
-  <section class="card">
-    <h2>What counts</h2>
-    <p>
-      Autonomous = no active human supervision.<br>
-      At scale = routine multi-center use.<br>
-      Better = credible outcome data.
-    </p>
-  </section>
+      <div class="cta">
+        <a class="btn" href="#clock">See the clock</a>
+        <a class="btn ghost" href="#discussion">Post updates</a>
+        <a class="btn ghost" href="#video">Watch the clip</a>
+      </div>
 
-  <!-- GOALPOSTS -->
-  <section class="card">
-    <h2>Common goalpost moves</h2>
-    <p>
-      “It’s autonomous” — but a surgeon is supervising.<br>
-      “At scale” — but it’s 8 cases in one lab.<br>
-      “Better” — but only surrogate metrics or edited demos.
-    </p>
-  </section>
+      <p class="status" style="margin-top:14px;">
+        Keep it factual: link papers, regulatory filings, trials, product demos—whatever you’ve got. Avoid personal harassment.
+      </p>
+    </header>
 
-  <footer>
-    Public accountability experiment · 2026–2029
-  </footer>
+    <section id="clock" class="card reveal">
+      <div class="cardtop">
+        <h2>Time remaining</h2>
+        <div class="micro">Target: 6 Jan 2029, 00:00 CET (Europe/Brussels)</div>
+      </div>
 
-</main>
+      <div class="countline">
+        <div class="big" id="countdown">Loading…</div>
+        <div class="labels">
+          <span class="chip">Years</span>
+          <span class="chip">Days</span>
+          <span class="chip">Hours</span>
+        </div>
+      </div>
 
-<script>
-// 6 Jan 2029 00:00 Brussels = 5 Jan 23:00 UTC
-const target = new Date("2029-01-05T23:00:00Z").getTime();
+      <div class="status" id="status">Loading…</div>
 
-function pad(n){return String(n).padStart(2,"0");}
+      <!-- minimalist illustration (placeholder style; easy to swap later) -->
+      <div class="illus" aria-hidden="true">
+        <svg width="320" height="160" viewBox="0 0 320 160" fill="none">
+          <rect x="70" y="115" width="180" height="10" rx="5" stroke="#67F2D0" stroke-width="2"/>
+          <line x1="100" y1="125" x2="100" y2="150" stroke="#67F2D0" stroke-width="2"/>
+          <line x1="220" y1="125" x2="220" y2="150" stroke="#67F2D0" stroke-width="2"/>
+          <circle cx="92" cy="55" r="10" stroke="#67F2D0" stroke-width="2"/>
+          <line x1="92" y1="55" x2="140" y2="65" stroke="#67F2D0" stroke-width="2"/>
+          <circle cx="140" cy="65" r="5" fill="#67F2D0"/>
+          <line x1="140" y1="65" x2="185" y2="88" stroke="#67F2D0" stroke-width="2"/>
+          <circle cx="185" cy="88" r="4" fill="#67F2D0"/>
+          <line x1="185" y1="88" x2="185" y2="110" stroke="#67F2D0" stroke-width="2"/>
+        </svg>
+      </div>
+    </section>
 
-function tick(){
-  const now = Date.now();
-  let diff = target - now;
+    <section class="grid">
+      <div class="card soft reveal">
+        <div class="cardtop">
+          <h2>What counts</h2>
+          <div class="micro">No goalpost gymnastics</div>
+        </div>
+        <ul>
+          <li><strong>Autonomous</strong>: not “hands on standby.” No active supervising clinician ready to take over.</li>
+          <li><strong>At scale</strong>: routine real-world multi-center use, not a one-off demo.</li>
+          <li><strong>Better</strong>: meaningful outcomes with credible comparative evidence.</li>
+        </ul>
+      </div>
 
-  const el = document.getElementById("countdown");
+      <div class="card soft reveal">
+        <div class="cardtop">
+          <h2>Common goalpost moves</h2>
+          <div class="micro">Expect these</div>
+        </div>
+        <ul>
+          <li>“It’s autonomous” (…but a surgeon is supervising)</li>
+          <li>“At scale” (…but it’s 8 cases in one lab)</li>
+          <li>“Better” (…but only surrogate metrics / edited demos)</li>
+        </ul>
+      </div>
+    </section>
 
-  if(diff <= 0){
-    el.innerText = "Time’s up.";
-    return;
-  }
+    <section id="video" class="card reveal" style="margin-top:14px;">
+      <div class="cardtop">
+        <h2>The prediction clip</h2>
+        <div class="micro">Replace this link if you have the exact video</div>
+      </div>
 
-  const s = Math.floor(diff/1000);
-  const d = Math.floor(s/86400);
-  const h = Math.floor((s%86400)/3600);
-  const m = Math.floor((s%3600)/60);
-  const sec = s%60;
+      <div class="video" aria-label="Embedded video">
+        <!-- Default embed: YouTube video discussing the claim.
+             Swap the src= to the exact clip you want (YouTube “embed” link). -->
+        <iframe
+          src="https://www.youtube-nocookie.com/embed/j5LB1ILu5wY"
+          title="Elon Musk prediction clip (discussion)"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+          allowfullscreen></iframe>
+      </div>
 
-  el.innerText = d+" days "+pad(h)+":"+pad(m)+":"+pad(sec);
-}
+      <p class="status" style="margin-top:12px;">
+        If your original clip is on X/Instagram/TikTok, you can link it below and we’ll embed that exact source instead. :contentReference[oaicite:1]{index=1}
+      </p>
+    </section>
 
-setInterval(tick,1000);
-tick();
-</script>
+    <section id="discussion" class="card reveal" style="margin-top:14px;">
+      <div class="cardtop">
+        <h2>Discussion / updates</h2>
+        <div class="micro">Memes + research links + milestones</div>
+      </div>
 
+      <p class="status" style="margin-bottom:12px;">
+        This site is static (no server). The simplest way to get a real conversation box is to embed
+        GitHub Discussions with <strong>Giscus</strong>.
+        That gives you moderation, spam controls, and supports images/links (good for memes + papers).
+      </p>
+
+      <!-- GISCUS PLACEHOLDER
+           After enabling Discussions in your repo, go to giscus.app and generate a snippet.
+           Replace the entire block below with the snippet you get (it will include data-repo, data-repo-id, etc). -->
+      <div style="border:1px dashed rgba(255,255,255,.18); border-radius:18px; padding:16px; background:rgba(0,0,0,.14); color:var(--muted);">
+        <strong>Comments not configured yet.</strong><br/>
+        1) Repo → Settings → enable <em>Discussions</em><br/>
+        2) Visit giscus.app → select your repo → copy the script snippet<br/>
+        3) Paste it here (replacing this box) → Commit
+      </div>
+    </section>
+
+    <div class="footer">
+      Start date: <strong>6 Jan 2026</strong> · Deadline: <strong>6 Jan 2029</strong> · Europe/Brussels timezone anchor.<br/>
+      Note: “Robot surgeons in 3 years” has been widely repeated in media; treat anything short of hard outcomes data as marketing. :contentReference[oaicite:2]{index=2}
+    </div>
+
+  </main>
+
+  <script>
+    // Target: 6 Jan 2029 00:00 Europe/Brussels.
+    // In January Brussels is CET (UTC+1), so midnight CET = 23:00:00Z on the previous day.
+    const TARGET_UTC_ISO = "2029-01-05T23:00:00Z";
+    const target = new Date(TARGET_UTC_ISO);
+
+    const elCountdown = document.getElementById("countdown");
+    const elStatus = document.getElementById("status");
+
+    function pad2(n){ return String(n).padStart(2, "0"); }
+
+    // Calendar-correct "full years remaining" by incrementing year-by-year (only a few iterations here).
+    function yearsDaysHoursRemaining(now, end){
+      if (now >= end) return { years:0, days:0, hours:0, done:true };
+
+      let cursor = new Date(now.getTime());
+      let years = 0;
+
+      // add whole years until next would exceed end
+      for (let i=0; i<50; i++){
+        const next = new Date(cursor.getTime());
+        next.setUTCFullYear(next.getUTCFullYear() + 1);
+        if (next <= end){
+          cursor = next;
+          years += 1;
+        } else {
+          break;
+        }
+      }
+
+      const diffMs = end.getTime() - cursor.getTime();
+      const totalHours = Math.floor(diffMs / (1000 * 60 * 60));
+      const days = Math.floor(totalHours / 24);
+      const hours = totalHours % 24;
+
+      return { years, days, hours, done:false };
+    }
+
+    function tick(){
+      const now = new Date();
+
+      if (now >= target){
+        elCountdown.textContent = "0 years – 0 days – 0 hours";
+        elStatus.textContent = "⏱️ Time’s up. Where are the unsupervised autonomous surgical robots at scale, and where’s the outcomes evidence?";
+        return;
+      }
+
+      const r = yearsDaysHoursRemaining(now, target);
+      elCountdown.textContent = `${r.years} years – ${r.days} days – ${r.hours} hours`;
+
+      const lines = [
+        "If someone claims it’s here: supervised or unsupervised?",
+        "At scale means multi-center routine use, not a demo.",
+        "Better means endpoints + comparative evidence, not vibes.",
+        "Post sources. Call out goalposts. Keep it civil."
+      ];
+      const idx = Math.floor(Date.now()/12000) % lines.length;
+      elStatus.textContent = "🧾 Reality check: " + lines[idx];
+    }
+
+    // reveal on scroll
+    const observer = new IntersectionObserver((entries)=>{
+      for (const e of entries){
+        if (e.isIntersecting) e.target.classList.add("show");
+      }
+    }, { threshold: 0.12 });
+    document.querySelectorAll(".reveal").forEach(el => observer.observe(el));
+
+    // tiny parallax on orbs
+    const orbA = document.querySelector(".orb.a");
+    const orbB = document.querySelector(".orb.b");
+    const orbC = document.querySelector(".orb.c");
+    function parallax(){
+      const y = window.scrollY || 0;
+      if (orbA) orbA.style.transform = `translate3d(${y * 0.02}px, ${y * 0.03}px, 0)`;
+      if (orbB) orbB.style.transform = `translate3d(${y * -0.02}px, ${y * 0.02}px, 0)`;
+      if (orbC) orbC.style.transform = `translate3d(0, ${y * -0.015}px, 0)`;
+      requestAnimationFrame(parallax);
+    }
+    requestAnimationFrame(parallax);
+
+    tick();
+    setInterval(tick, 60 * 1000); // update every minute (years/days/hours display doesn't need per-second)
+  </script>
 </body>
 </html>
